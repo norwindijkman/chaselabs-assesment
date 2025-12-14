@@ -1,68 +1,66 @@
 <script lang="ts">
-	import { Calendar as CalendarPrimitive } from "bits-ui";
-	import * as Calendar from "./index.js";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
-	import type { ButtonVariant } from "../button/button.svelte";
-	import { getLocalTimeZone, isEqualMonth, today, type DateValue } from "@internationalized/date";
-	import type { Snippet } from "svelte";
-	import { page } from "$app/state";
-	import { goto } from "$app/navigation";
+	import { Calendar as CalendarPrimitive } from 'bits-ui';
+	import * as Calendar from './index.js';
+	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
+	import type { ButtonVariant } from '../button/button.svelte';
+	import { getLocalTimeZone, isEqualMonth, today, type DateValue } from '@internationalized/date';
+	import type { Snippet } from 'svelte';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
 		placeholder = $bindable(),
 		class: className,
-		weekdayFormat = "short",
-		buttonVariant = "ghost",
-		captionLayout = "label",
-		locale = "en-US",
+		weekdayFormat = 'short',
+		buttonVariant = 'ghost',
+		captionLayout = 'label',
+		locale = 'en-US',
 		months: monthsProp,
 		years,
 		monthFormat: monthFormatProp,
-		yearFormat = "numeric",
+		yearFormat = 'numeric',
 		day,
 		disableDaysOutsideMonth = false,
 		...restProps
 	}: WithoutChildrenOrChild<CalendarPrimitive.RootProps> & {
 		buttonVariant?: ButtonVariant;
-		captionLayout?: "dropdown" | "dropdown-months" | "dropdown-years" | "label";
-		months?: CalendarPrimitive.MonthSelectProps["months"];
-		years?: CalendarPrimitive.YearSelectProps["years"];
-		monthFormat?: CalendarPrimitive.MonthSelectProps["monthFormat"];
-		yearFormat?: CalendarPrimitive.YearSelectProps["yearFormat"];
+		captionLayout?: 'dropdown' | 'dropdown-months' | 'dropdown-years' | 'label';
+		months?: CalendarPrimitive.MonthSelectProps['months'];
+		years?: CalendarPrimitive.YearSelectProps['years'];
+		monthFormat?: CalendarPrimitive.MonthSelectProps['monthFormat'];
+		yearFormat?: CalendarPrimitive.YearSelectProps['yearFormat'];
 		day?: Snippet<[{ day: DateValue; outsideMonth: boolean }]>;
 	} = $props();
 
-  const todayDate = today(getLocalTimeZone());
-  let isPrevDisabled = $derived(
-    placeholder
-      ? isEqualMonth(placeholder, todayDate) || placeholder.compare(todayDate) < 0
-      : false
-  );
+	const todayDate = today(getLocalTimeZone());
+	let isPrevDisabled = $derived(
+		placeholder ? isEqualMonth(placeholder, todayDate) || placeholder.compare(todayDate) < 0 : false
+	);
 
 	const monthFormat = $derived.by(() => {
 		if (monthFormatProp) return monthFormatProp;
-		if (captionLayout.startsWith("dropdown")) return "short";
-		return "long";
+		if (captionLayout.startsWith('dropdown')) return 'short';
+		return 'long';
 	});
 
-  const handleMonthNav = (direction: 'next' | 'back') => {
-    if (!placeholder) return
-    const newMonth = placeholder.add({ months: direction === 'next' ? 1 : -1 })
-    const newMonthStr = `${newMonth.year}-${newMonth.month.toString().padStart(2, "0")}`
-    const newUrl = new URL(page.url)
-    if (todayDate.toString().slice(0, 7) === newMonthStr) {
-      newUrl.searchParams.delete('month')
-    } else {
-      newUrl.searchParams.set('month', newMonthStr)
-    }
-    goto(newUrl, {
-      keepFocus: true,
-      replaceState: false,
-      noScroll: true,
-    })
-  }
+	const handleMonthNav = (direction: 'next' | 'back') => {
+		if (!placeholder) return;
+		const newMonth = placeholder.add({ months: direction === 'next' ? 1 : -1 });
+		const newMonthStr = `${newMonth.year}-${newMonth.month.toString().padStart(2, '0')}`;
+		const newUrl = new URL(page.url);
+		if (todayDate.toString().slice(0, 7) === newMonthStr) {
+			newUrl.searchParams.delete('month');
+		} else {
+			newUrl.searchParams.set('month', newMonthStr);
+		}
+		goto(newUrl, {
+			keepFocus: true,
+			replaceState: false,
+			noScroll: true
+		});
+	};
 </script>
 
 <!--
@@ -76,7 +74,7 @@ get along, so we shut typescript up by casting `value` to `never`.
 	{weekdayFormat}
 	{disableDaysOutsideMonth}
 	class={cn(
-		"bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+		'group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent',
 		className
 	)}
 	{locale}
@@ -87,23 +85,23 @@ get along, so we shut typescript up by casting `value` to `never`.
 	{#snippet children({ months, weekdays })}
 		<Calendar.Months>
 			<Calendar.Nav>
-				<Calendar.PrevButton 
-          class={cn({ 'cursor-not-allowed opacity-30 hover:!bg-transparent': isPrevDisabled })}
-          disabled={isPrevDisabled}
-          aria-disabled={isPrevDisabled}
-          variant={buttonVariant}
-          onclick={(event) => {
-            event.preventDefault()
-            if (!isPrevDisabled) handleMonthNav('back')
-          }}
-        />
-				<Calendar.NextButton 
-          variant={buttonVariant}
-          onclick={(event) => {
-            event.preventDefault()
-            handleMonthNav('next')
-          }}
-        />
+				<Calendar.PrevButton
+					class={cn({ 'cursor-not-allowed opacity-30 hover:!bg-transparent': isPrevDisabled })}
+					disabled={isPrevDisabled}
+					aria-disabled={isPrevDisabled}
+					variant={buttonVariant}
+					onclick={(event) => {
+						event.preventDefault();
+						if (!isPrevDisabled) handleMonthNav('back');
+					}}
+				/>
+				<Calendar.NextButton
+					variant={buttonVariant}
+					onclick={(event) => {
+						event.preventDefault();
+						handleMonthNav('next');
+					}}
+				/>
 			</Calendar.Nav>
 			{#each months as month, monthIndex (month)}
 				<Calendar.Month>
@@ -138,7 +136,7 @@ get along, so we shut typescript up by casting `value` to `never`.
 											{#if day}
 												{@render day({
 													day: date,
-													outsideMonth: !isEqualMonth(date, month.value),
+													outsideMonth: !isEqualMonth(date, month.value)
 												})}
 											{:else}
 												<Calendar.Day />

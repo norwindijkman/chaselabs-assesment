@@ -6,8 +6,8 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
-  <title>ACME — Introductory Meeting</title>
+	<link rel="icon" href={favicon} />
+	<title>ACME — Introductory Meeting</title>
 </svelte:head>
 
 {@render children()}
