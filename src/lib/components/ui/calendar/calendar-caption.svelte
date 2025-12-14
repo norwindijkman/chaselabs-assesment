@@ -72,5 +72,12 @@
 	{/if}
 	{@render YearSelect()}
 {:else}
-	{formatMonth(month)} {formatYear(month)}
+  <span class="font-bold text-base">
+    <span class="text-primary">
+      {formatMonth(month)}
+    </span>
+    <span class="">
+      {formatYear(month)}
+    </span>
+  </span>
 {/if}
