@@ -1,15 +1,18 @@
-/**
- * Returns the provided YYYY-MM string if valid, otherwise returns the current month.
- */
 const resolveMonth = (input: string | null) => {
   const now = new Date();
-  const current = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const current = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}` as const;
 
-  // Validate: Exists + Matches YYYY-MM + Month is 01-12
   const isValid = input && /^\d{4}-(0[1-9]|1[0-2])$/.test(input);
-  const result = isValid ? input : current;
+  const month = (isValid ? input : current) as `${number}-${number}`;
 
-  return result as `${number}-${number}`
+  const status: 'past' | 'current' | 'future' =
+    month === current 
+      ? 'current' 
+      : month < current 
+        ? 'past' 
+        : 'future';
+
+  return { month, status };
 };
 
 export default resolveMonth;

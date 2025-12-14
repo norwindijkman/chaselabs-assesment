@@ -3,7 +3,7 @@
 	import * as Calendar from "./index.js";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 	import type { ButtonVariant } from "../button/button.svelte";
-	import { isEqualMonth, type DateValue } from "@internationalized/date";
+	import { getLocalTimeZone, isEqualMonth, today, type DateValue } from "@internationalized/date";
 	import type { Snippet } from "svelte";
 
 	let {
@@ -31,6 +31,13 @@
 		yearFormat?: CalendarPrimitive.YearSelectProps["yearFormat"];
 		day?: Snippet<[{ day: DateValue; outsideMonth: boolean }]>;
 	} = $props();
+
+  const minMonth = today(getLocalTimeZone());
+  let isPrevDisabled = $derived(
+    placeholder
+      ? isEqualMonth(placeholder, minMonth) || placeholder.compare(minMonth) < 0
+      : false
+  );
 
 	const monthFormat = $derived.by(() => {
 		if (monthFormatProp) return monthFormatProp;
@@ -61,7 +68,15 @@ get along, so we shut typescript up by casting `value` to `never`.
 	{#snippet children({ months, weekdays })}
 		<Calendar.Months>
 			<Calendar.Nav>
-				<Calendar.PrevButton variant={buttonVariant} />
+				<Calendar.PrevButton 
+          class={cn({ 'cursor-not-allowed opacity-30 hover:!bg-transparent': isPrevDisabled })}
+          disabled={isPrevDisabled}
+          aria-disabled={isPrevDisabled}
+          variant={buttonVariant}
+          onclick={(event) => {
+            if (isPrevDisabled) event.preventDefault()
+          }}
+        />
 				<Calendar.NextButton variant={buttonVariant} />
 			</Calendar.Nav>
 			{#each months as month, monthIndex (month)}

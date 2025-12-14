@@ -8,7 +8,7 @@ type AvailabilitySlot = {
 	end: string;
 };
 
-type AvailabilityByDay = Record<string, AvailabilitySlot[]>;
+export type AvailabilityByDay = Record<string, AvailabilitySlot[]>;
 
 const groupAvailabilityByDay = (slots: AvailabilitySlot[]) => {
 	return slots.reduce<AvailabilityByDay>((acc, slot) => {
@@ -26,14 +26,26 @@ const loadAvailability = async ({
 	fetch: LoadEvent['fetch'];
 	dateStr: string | null;
 }) => {
-	const range = getMonthRange(resolveMonth(dateStr));
+  const month = resolveMonth(dateStr)
+  if (month.status === 'past') return { month, availableDates: {} }
+
+	const range = getMonthRange(month.month);
 	const apiUrl = new URL(env.PUBLIC_CHASE_CALENDAR_URI || 'https://calendar.meetchase.ai');
 	apiUrl.pathname = '/api/availability';
 	apiUrl.searchParams.set('start', range.start);
 	apiUrl.searchParams.set('end', range.end);
-	const availability: AvailabilitySlot[] = await fetch(apiUrl.toString()).then((res) => res.json());
+	const availabilityData: AvailabilitySlot[] = await fetch(apiUrl.toString()).then((res) => res.json());
+  const now = new Date()
+  const availability = month.status === 'current' 
+    ? availabilityData.filter(slot => new Date(slot.start) > now) 
+    : availabilityData
 
-	return groupAvailabilityByDay(availability);
+	const availableDates = groupAvailabilityByDay(availability);
+  return {
+    month,
+    availableDates,
+    selectedDay: availability[0]?.start.slice(0, 10) as `${number}-${number}-${number}`
+  }
 };
 
 export default loadAvailability;
