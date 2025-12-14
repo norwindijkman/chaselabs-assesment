@@ -5,6 +5,8 @@
 	import type { ButtonVariant } from "../button/button.svelte";
 	import { getLocalTimeZone, isEqualMonth, today, type DateValue } from "@internationalized/date";
 	import type { Snippet } from "svelte";
+	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
 
 	let {
 		ref = $bindable(null),
@@ -32,10 +34,10 @@
 		day?: Snippet<[{ day: DateValue; outsideMonth: boolean }]>;
 	} = $props();
 
-  const minMonth = today(getLocalTimeZone());
+  const todayDate = today(getLocalTimeZone());
   let isPrevDisabled = $derived(
     placeholder
-      ? isEqualMonth(placeholder, minMonth) || placeholder.compare(minMonth) < 0
+      ? isEqualMonth(placeholder, todayDate) || placeholder.compare(todayDate) < 0
       : false
   );
 
@@ -44,6 +46,23 @@
 		if (captionLayout.startsWith("dropdown")) return "short";
 		return "long";
 	});
+
+  const handleMonthNav = (direction: 'next' | 'back') => {
+    if (!placeholder) return
+    const newMonth = placeholder.add({ months: direction === 'next' ? 1 : -1 })
+    const newMonthStr = `${newMonth.year}-${newMonth.month.toString().padStart(2, "0")}`
+    const newUrl = new URL(page.url)
+    if (todayDate.toString().slice(0, 7) === newMonthStr) {
+      newUrl.searchParams.delete('month')
+    } else {
+      newUrl.searchParams.set('month', newMonthStr)
+    }
+    goto(newUrl, {
+      keepFocus: true,
+      replaceState: false,
+      noScroll: true,
+    })
+  }
 </script>
 
 <!--
@@ -74,10 +93,17 @@ get along, so we shut typescript up by casting `value` to `never`.
           aria-disabled={isPrevDisabled}
           variant={buttonVariant}
           onclick={(event) => {
-            if (isPrevDisabled) event.preventDefault()
+            event.preventDefault()
+            if (!isPrevDisabled) handleMonthNav('back')
           }}
         />
-				<Calendar.NextButton variant={buttonVariant} />
+				<Calendar.NextButton 
+          variant={buttonVariant}
+          onclick={(event) => {
+            event.preventDefault()
+            handleMonthNav('next')
+          }}
+        />
 			</Calendar.Nav>
 			{#each months as month, monthIndex (month)}
 				<Calendar.Month>

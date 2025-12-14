@@ -4,8 +4,6 @@
 	import Calendar from "$lib/components/ui/calendar/calendar.svelte";
 	import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 	import type { AvailabilityByDay } from '../../loadAvailability/loadAvailability';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
 	import TimePicker from './TimePicker.svelte';
 
   let {
@@ -28,8 +26,6 @@
     ? dateStrToCalendarDate(selectedDay)
     : undefined
   )
-
-  $inspect(availableDates)
 </script>
 
 <Card.Root class="gap-0 p-0">
@@ -48,20 +44,6 @@
           md:[--cell-size:--spacing(12)] [&_[data-outside-month]]:opacity-0
         "
 				weekdayFormat="short"
-        onPlaceholderChange={dateValue => {
-          const currentMonth = `${dateValue.year}-${dateValue.month.toString().padStart(2, "0")}`
-          const newUrl = new URL(page.url)
-          if (todayDate.toString().slice(0, 7) === currentMonth) {
-            newUrl.searchParams.delete('month')
-          } else {
-            newUrl.searchParams.set('month', `${dateValue.year}-${dateValue.month.toString().padStart(2, "0")}`)
-          }
-          goto(newUrl, {
-            keepFocus: true,
-            replaceState: false,
-            noScroll: true,
-          })
-        }}
 			/>
 		</div>
     {#if value}
