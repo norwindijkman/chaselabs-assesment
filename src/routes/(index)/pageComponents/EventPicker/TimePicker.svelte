@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { AvailabilityByDay } from "../../loadAvailability/loadAvailability";
+	import type { AvailabilityByDay, SelectedTimeSlot } from "../../loadAvailability/loadAvailability";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { getLocalTimeZone, type CalendarDate } from "@internationalized/date";
+  import ConfirmForm from "./ConfirmForm/ConfirmForm.svelte";
 
   let {
     timeSlots,
@@ -12,7 +13,14 @@
   } = $props()
 
   let use24 = $state(true);
+  let selectedTimeSlot = $state<SelectedTimeSlot|null>(null)
 </script>
+
+<ConfirmForm 
+  isOpen={Boolean(selectedTimeSlot)} 
+  {selectedTimeSlot}
+  close={() => selectedTimeSlot = null} 
+/>
 
 <div>
   <div class="flex items-center justify-between mb-6">
@@ -26,25 +34,29 @@
         })}
       </span>
     </h3>
-    <div class="flex bg-muted rounded-lg p-0.5">
+    <div class="flex bg-muted rounded-[0.375rem] p-0.5">
       <button 
+        disabled={!use24}
         class:bg-background={!use24}
         class:text-foreground={!use24} 
         class:shadow-sm={!use24}
+        class:cursor-pointer={use24}
         class:text-muted-foreground={use24}
         class:hover:text-foreground={use24}
-        class="cursor-pointer px-2 py-1 text-xs rounded font-medium"
+        class="px-2 py-1 text-xs rounded font-medium"
         onclick={() => use24 = false}
       >
         12h
       </button>
       <button 
+        disabled={use24}
         class:bg-background={use24}
         class:text-foreground={use24} 
         class:shadow-sm={use24}
+        class:cursor-pointer={!use24}
         class:text-muted-foreground={!use24}
         class:hover:text-foreground={!use24}
-        class="cursor-pointer px-2 py-1 text-xs rounded font-medium"
+        class="px-2 py-1 text-xs rounded font-medium"
         onclick={() => use24 = true}
       >
         24h
@@ -53,10 +65,17 @@
   </div>
   <div class="grid gap-2">
     {#each timeSlots as time (time)}
-      <Button variant="outline" class="w-full shadow-none">
+      <Button 
+        onclick={() => selectedTimeSlot = {
+          timeSlot: time,
+          use24,
+        }}
+        variant="outline" 
+        class="w-full shadow-none"
+      >
         {use24
           ? time.start.slice(11, 16)
-          : new Date(time.start).toLocaleTimeString("en-US", {
+          : new Date(time.start).toLocaleTimeString("en-UK", {
               hour: "numeric",
               minute: "2-digit",
               hour12: true,

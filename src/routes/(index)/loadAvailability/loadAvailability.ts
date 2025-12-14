@@ -10,6 +10,11 @@ type AvailabilitySlot = {
 
 export type AvailabilityByDay = Record<string, AvailabilitySlot[]>;
 
+export type SelectedTimeSlot = {
+  use24: boolean
+  timeSlot: AvailabilitySlot
+}
+
 const groupAvailabilityByDay = (slots: AvailabilitySlot[]) => {
 	return slots.reduce<AvailabilityByDay>((acc, slot) => {
 		const day = slot.start.split('T')[0];

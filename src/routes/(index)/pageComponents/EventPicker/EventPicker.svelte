@@ -30,7 +30,10 @@
 
 <Card.Root class="gap-0 p-0">
 	<Card.Content class="relative md:flex p-0 md:pe-56">
-    <MeetingInfo />
+
+    <div class="flex max-w-[320px] min-w-[280px] flex-col gap-6 border-r border-border p-6">
+      <MeetingInfo />
+    </div>
 		<div class="p-6">
 			<Calendar
         weekStartsOn={1}

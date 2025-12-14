@@ -1,4 +1,46 @@
-<div class="flex max-w-[320px] min-w-[280px] flex-col gap-6 border-r border-border p-6">
+<script lang="ts">
+	import type { AvailabilityByDay } from "../../loadAvailability/loadAvailability";
+
+  let { 
+    selectedTimeSlot,
+  }: {
+    selectedTimeSlot?: {
+      timeSlot: AvailabilityByDay[string][number], 
+      use24: boolean
+    }
+  } = $props()
+
+  const formatTimeRange = (
+    timeSlot: AvailabilityByDay[string][number], use24: boolean ) => {
+    const {
+        start,
+        end
+    } = timeSlot;
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const dateFormatter = new Intl.DateTimeFormat(undefined, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const timeFormatter = new Intl.DateTimeFormat(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: !use24,
+    });
+
+    const datePart = dateFormatter.format(startDate);
+    const timePart = `${timeFormatter.format(startDate)} – ${timeFormatter.format(endDate)}`;
+
+    return `${datePart}\n${timePart}`;
+  };
+</script>
+
+<div>
     <div>
         <p class="mb-2 text-sm text-muted-foreground">ChaseLabs</p>
         <div class="mb-4 flex -space-x-2">
@@ -24,11 +66,11 @@
                 J
             </div>
         </div>
-        <h1 class="text-xl leading-tight font-semibold text-foreground">
+        <h1 class="text-xl leading-tight font-semibold text-foreground mb-1">
             Senior Design Engineer - Intro Call
         </h1>
     </div>
-    <p class="text-sm leading-relaxed text-muted-foreground">
+    <p class="mb-2 text-sm leading-relaxed text-muted-foreground">
         Intro call (30 minutes)- you'll meet <a
             href="#"
             class="text-primary hover:underline"
@@ -44,6 +86,21 @@
         and your experience.
     </p>
     <div class="flex flex-col gap-3">
+      {#if selectedTimeSlot}
+        <div class="flex items-center gap-3 text-muted-foreground">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="18"
+            height="18"
+            viewBox="0 -960 960 960" 
+            fill="currentColor"
+            class="relative bottom-px"
+          >
+            <path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
+          </svg>
+          <span class="text-sm">{formatTimeRange(selectedTimeSlot.timeSlot, selectedTimeSlot.use24)}</span>
+        </div>
+      {/if}
         <div class="flex items-center gap-3 text-muted-foreground">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -88,38 +145,5 @@
                 ></line>
             </svg><span class="text-sm">Organizer's default app</span>
         </div>
-        <button class="flex items-center gap-3 text-muted-foreground transition-colors hover:text-foreground"><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-globe h-4 w-4"
-            >
-                <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                ></circle>
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                <path d="M2 12h20"></path>
-            </svg><span class="text-sm">Europe/Amsterdam</span><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-chevron-down h-3 w-3"
-            >
-                <path d="m6 9 6 6 6-6"></path>
-            </svg></button>
     </div>
 </div>
