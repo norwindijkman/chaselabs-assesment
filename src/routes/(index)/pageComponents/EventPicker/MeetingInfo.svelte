@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { AvailabilityByDay } from "../../loadAvailability/loadAvailability";
+  import acmaLogo from '$lib/assets/acma-logo.svg'
 
   let { 
     selectedTimeSlot,
@@ -20,17 +21,19 @@
     const startDate = new Date(start);
     const endDate = new Date(end);
 
-    const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    const dateFormatter = new Intl.DateTimeFormat('en-UK', {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: "UTC",
     });
 
-    const timeFormatter = new Intl.DateTimeFormat(undefined, {
+    const timeFormatter = new Intl.DateTimeFormat('en-UK', {
       hour: "numeric",
       minute: "2-digit",
       hour12: !use24,
+      timeZone: "UTC",
     });
 
     const datePart = dateFormatter.format(startDate);
@@ -42,8 +45,19 @@
 
 <div>
     <div>
-        <p class="mb-2 text-sm text-muted-foreground">ChaseLabs</p>
-        <div class="mb-4 flex -space-x-2">
+        <img 
+          class="mb-6"
+          width="128" 
+          height="32" 
+          alt="ACMA"
+          src={acmaLogo} 
+        />
+        <div 
+          class:hidden={selectedTimeSlot}
+          class:sm:flex={selectedTimeSlot}
+          class:flex={!selectedTimeSlot}
+          class="mb-4 -space-x-2"
+        >
             <div
                 class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-xs font-medium text-foreground"
                 title="Company"
@@ -67,25 +81,18 @@
             </div>
         </div>
         <h1 class="text-xl leading-tight font-semibold text-foreground mb-1">
-            Senior Design Engineer - Intro Call
+            ACME — Introductory Meeting
         </h1>
     </div>
-    <p class="mb-2 text-sm leading-relaxed text-muted-foreground">
-        Intro call (30 minutes)- you'll meet <a
-            href="#"
-            class="text-primary hover:underline"
-        >some of the team</a>
-        (<a
-            href="#"
-            class="text-primary hover:underline"
-        >Maya</a> and
-        <a
-            href="#"
-            class="text-primary hover:underline"
-        >Jacob</a>), and we get to know more about you
-        and your experience.
+    <p 
+      class:hidden={selectedTimeSlot}
+      class="text-sm leading-relaxed text-muted-foreground"
+    >
+      A 30-minute introductory call to learn more about your needs and explore how
+      ACME can help. You’ll be meeting with a member of the ACME team to discuss next
+      steps and answer any questions you may have.
     </p>
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-3 mt-3">
       {#if selectedTimeSlot}
         <div class="flex items-center gap-3 text-muted-foreground">
           <svg 
@@ -98,7 +105,7 @@
           >
             <path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
           </svg>
-          <span class="text-sm">{formatTimeRange(selectedTimeSlot.timeSlot, selectedTimeSlot.use24)}</span>
+          <span class="text-sm font-semibold">{formatTimeRange(selectedTimeSlot.timeSlot, selectedTimeSlot.use24)}</span>
         </div>
       {/if}
         <div class="flex items-center gap-3 text-muted-foreground">
@@ -120,30 +127,11 @@
                     r="10"
                 ></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
-            </svg><span class="text-sm">30m</span>
+            </svg><span class="text-sm font-semibold">30m</span>
         </div>
         <div class="flex items-center gap-3 text-muted-foreground">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-link2 h-4 w-4"
-            >
-                <path d="M9 17H7A5 5 0 0 1 7 7h2"></path>
-                <path d="M15 7h2a5 5 0 1 1 0 10h-2"></path>
-                <line
-                    x1="8"
-                    x2="16"
-                    y1="12"
-                    y2="12"
-                ></line>
-            </svg><span class="text-sm">Organizer's default app</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18px" height="18px"><rect width="16" height="16" x="12" y="16" fill="#fff" transform="rotate(-90 20 24)"/><polygon fill="#1e88e5" points="3,17 3,31 8,32 13,31 13,17 8,16"/><path fill="#4caf50" d="M37,24v14c0,1.657-1.343,3-3,3H13l-1-5l1-5h14v-7l5-1L37,24z"/><path fill="#fbc02d" d="M37,10v14H27v-7H13l-1-5l1-5h21C35.657,7,37,8.343,37,10z"/><path fill="#1565c0" d="M13,31v10H6c-1.657,0-3-1.343-3-3v-7H13z"/><polygon fill="#e53935" points="13,7 13,17 3,17"/><polygon fill="#2e7d32" points="38,24 37,32.45 27,24 37,15.55"/><path fill="#4caf50" d="M46,10.11v27.78c0,0.84-0.98,1.31-1.63,0.78L37,32.45v-16.9l7.37-6.22C45.02,8.8,46,9.27,46,10.11z"/></svg>
+            <span class="text-sm font-semibold">Google Meet</span>
         </div>
     </div>
 </div>

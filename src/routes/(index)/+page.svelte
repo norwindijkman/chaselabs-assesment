@@ -4,7 +4,7 @@
 </script>
 
 
-<div class="mt-24 bg-background flex items-center justify-center p-4 md:p-8">
+<div class="sm:mt-24 bg-background flex items-center justify-center p-4 md:p-8">
   <EventPicker 
     selectedDay={data.availability.selectedDay}
     currentMonth={data.availability.month.month}

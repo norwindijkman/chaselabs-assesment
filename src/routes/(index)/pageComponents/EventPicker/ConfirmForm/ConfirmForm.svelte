@@ -64,7 +64,7 @@
 
   <!-- Modal Panel -->
   <div 
-    class="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5"
+    class="relative w-full max-w-lg overflow-hidden max-h-[75vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-black/5"
     transition:scale={{ duration: 200, start: 0.95 }}
   >
     
@@ -77,7 +77,7 @@
           </svg>
         </div>
         <h3 class="mt-4 text-lg font-bold text-gray-900">Your meeting with <b>ACME</b> is confirmed</h3>
-        <p class="mt-2 text-sm text-gray-500">
+        <p class=" mt-2 text-sm text-gray-500">
           You’ll receive a calendar invite and confirmation email shortly with all the details.
           If you need to reschedule or cancel, you can do so from the link in the email.
         </p>
