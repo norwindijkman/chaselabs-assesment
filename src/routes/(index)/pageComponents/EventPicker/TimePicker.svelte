@@ -66,7 +66,7 @@
 			</button>
 		</div>
 	</div>
-	<div class="grid gap-2">
+	<div class="grid gap-2 md:max-h-80 overflow-y-auto">
 		{#each timeSlots as time (time)}
 			<Button
 				onclick={() =>
@@ -82,7 +82,8 @@
 					: new Date(time.start).toLocaleTimeString('en-UK', {
 							hour: 'numeric',
 							minute: '2-digit',
-							hour12: true
+							hour12: true,
+              timeZone: 'UTC',
 						})}
 			</Button>
 		{/each}

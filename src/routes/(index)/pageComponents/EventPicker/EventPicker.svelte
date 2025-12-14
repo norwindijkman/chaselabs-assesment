@@ -49,7 +49,7 @@
 			{#if value}
 				<div
 					class="
-            no-scrollbar inset-y-0 end-0 flex max-h-72 w-full scroll-pb-6 flex-col gap-4 overflow-y-auto
+            no-scrollbar inset-y-0 end-0 flex w-full scroll-pb-6 flex-col gap-4 overflow-y-auto
             p-6 md:max-h-none md:w-56
           "
 				>

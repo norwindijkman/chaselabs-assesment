@@ -1,9 +1,8 @@
 import { env } from '$env/dynamic/public';
 import type { LoadEvent } from '@sveltejs/kit';
-import getMonthRange from './getMonthRange';
-import resolveMonth from './resolveMonth';
+import { getMonthRange, resolveMonth, splitInto30MinBlocks } from './calendarUtilities';
 
-type AvailabilitySlot = {
+export type AvailabilitySlot = {
 	start: string;
 	end: string;
 };
@@ -42,11 +41,12 @@ const loadAvailability = async ({
 	const availabilityData: AvailabilitySlot[] = await fetch(apiUrl.toString()).then((res) =>
 		res.json()
 	);
+  const availabilityDataExpanded = splitInto30MinBlocks(availabilityData)
 	const now = new Date();
 	const availability =
 		month.status === 'current'
-			? availabilityData.filter((slot) => new Date(slot.start) > now)
-			: availabilityData;
+			? availabilityDataExpanded.filter((slot) => new Date(slot.start) > now)
+			: availabilityDataExpanded;
 
 	const availableDates = groupAvailabilityByDay(availability);
 	return {
