@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AvailabilityByDay } from '../../loadAvailability/loadAvailability';
-	import acmaLogo from '$lib/assets/acma-logo.svg';
+	import acmeLogo from '$lib/assets/acme-logo.svg';
 
 	let {
 		selectedTimeSlot
@@ -41,7 +41,7 @@
 
 <div>
 	<div>
-		<img class="mb-6" width="128" height="32" alt="ACMA" src={acmaLogo} />
+		<img class="mb-6" width="128" height="32" alt="ACME" src={acmeLogo} />
 		<div
 			class:hidden={selectedTimeSlot}
 			class:sm:flex={selectedTimeSlot}
